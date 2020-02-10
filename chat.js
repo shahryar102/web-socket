@@ -1,0 +1,30 @@
+//making connection
+
+var socket =io.connect('http://localhost:4000');//different form backend socket variable ,dont get confused
+
+//Query Dom
+var message = document.getElementById("message");
+var handle = document.getElementById("handle");
+var btn = document.getElementById("send");
+var output = document.getElementById("output");
+var feedback = document.getElementById("feedback");
+//Emit events
+
+btn.addEventListener('click',function(){
+  socket.emit('chat',{message:message.value,handle:handle.value});
+});
+
+message.addEventListener('keypress',function(){
+    socket.emit('typing',handle.value);
+});
+//Listen for events
+
+socket.on('chat',function(data){
+  feedback.innerHTML = "";  
+  output.innerHTML += "<P><b>"+data.handle+":</b>"+data.message+"</p>";
+
+});
+
+socket.on('typing',function(data){
+    feedback.innerHTML = '<p><em>'+data+' is typing a message...</em></p>';
+});
